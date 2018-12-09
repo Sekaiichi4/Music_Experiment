@@ -7,21 +7,15 @@ using System;
 
 public class CsvReadWrite : MonoBehaviour {
     
-    private List<string[]> rowData = new List<string[]>();
-	//private string[] noteNames = {"C" ,"Cssh" ,"Csh" ,"Df" ,"Dsf" ,"D" ,"Dssh" ,"Dsh" ,"Ef" ,"Esf" ,"E" ,"Ff" ,"Esh" ,"F" ,"Fssh" ,"Fsh" ,"Gf" ,"Gsf" ,"G" ,"Gssh" ,"Gsh" ,"Af" ,"Asf" ,"A" ,"Assh" ,"Ash" ,"Bf" ,"Bsf" ,"B" ,"Cf" ,"Bsh"};
-       
-    public void Save(string name, string score)
+    private List<string[]> rowData = new List<string[]>();       
+    public void Save(string name, string choice)
 	{
         string[] rowDataTemp;
 
-        // Creating First row of titles manually..
-        // rowDataTemp[0] = "Note";
-        // rowDataTemp[1] = "Score";
-        // rowData.Add(rowDataTemp);
-
 		rowDataTemp = new string[2];
 		rowDataTemp[0] = name; // Note name
-		rowDataTemp[1] = score; // Score given by the listener.
+		rowDataTemp[1] = choice; // Score given by the listener.
+        //rowDataTemp[2] = decisionTime; // Time it took to decide on an option.
 		rowData.Add(rowDataTemp);
 
         string[][] output = new string[rowData.Count][];

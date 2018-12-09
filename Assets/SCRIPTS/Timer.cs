@@ -33,6 +33,6 @@ public class Timer : MonoBehaviour
     void OnEnable()
     {
         setSeconds = 59;
-        setMinutes = 2;
+        setMinutes = 0;
     }
 }
