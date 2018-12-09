@@ -417,8 +417,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6, y: 4.6}
-  m_SizeDelta: {x: 300, y: 87.65}
+  m_AnchoredPosition: {x: 6, y: 43}
+  m_SizeDelta: {x: 643.47, y: 329.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &533604918
 MonoBehaviour:
@@ -442,7 +442,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 300
+    m_FontSize: 60
     m_FontStyle: 1
     m_BestFit: 1
     m_MinSize: 0
@@ -453,7 +453,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SPEECH
+  m_Text: "\u3054\u53C2\u52A0\u3044\u305F\u3060\u304D\n\u3042\u308A\u304C\u3068\u3046\u3054\u3056\u3044\u307E\u3059\n\n\u6307\u793A\u304C\u3042\u308B\u307E\u3067\u304A\u5F85\u3061\u4E0B\u3055\u3044"
 --- !u!222 &533604919
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -478,7 +478,6 @@ GameObject:
   m_Component:
   - component: {fileID: 844710908}
   - component: {fileID: 844710910}
-  - component: {fileID: 844710909}
   m_Layer: 5
   m_Name: Title (1)
   m_TagString: Untagged
@@ -506,40 +505,6 @@ RectTransform:
   m_AnchoredPosition: {x: -45.2, y: 30}
   m_SizeDelta: {x: 300, y: 94.1}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &844710909
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 844710907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.641}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 300
-    m_FontStyle: 1
-    m_BestFit: 1
-    m_MinSize: 0
-    m_MaxSize: 300
-    m_Alignment: 4
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: SPEECH
 --- !u!222 &844710910
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -786,10 +751,10 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 91
+    m_FontSize: 74
     m_FontStyle: 1
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 0
     m_MaxSize: 128
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -797,7 +762,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: START
+  m_Text: "\u306F\u3058\u3081\u308B"
 --- !u!222 &1709898709
 CanvasRenderer:
   m_ObjectHideFlags: 0

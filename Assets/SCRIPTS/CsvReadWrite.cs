@@ -8,14 +8,14 @@ using System;
 public class CsvReadWrite : MonoBehaviour {
     
     private List<string[]> rowData = new List<string[]>();       
-    public void Save(string name, string choice)
+    public void Save(string name, string choice, string decisionTime)
 	{
         string[] rowDataTemp;
 
-		rowDataTemp = new string[2];
+		rowDataTemp = new string[3];
 		rowDataTemp[0] = name; // Note name
 		rowDataTemp[1] = choice; // Score given by the listener.
-        //rowDataTemp[2] = decisionTime; // Time it took to decide on an option.
+        rowDataTemp[2] = decisionTime; // Time it took to decide on an option.
 		rowData.Add(rowDataTemp);
 
         string[][] output = new string[rowData.Count][];

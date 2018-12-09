@@ -13,8 +13,10 @@ public class MusicPlayer : MonoBehaviour
 	public Text title;
 	public GameObject breakScreen;
 	public GameObject finishScreen;
-	public bool isPractice;
+	public bool isPractice, startTiming;
 	public int indexPractice, index, hadBreaks;
+
+	public GameObject nextButton;
 
 	private string[] categoryNames = { "A", "B", "C", "D"};	
 	
@@ -26,6 +28,7 @@ public class MusicPlayer : MonoBehaviour
 
 	private CsvReadWrite csvWriter;
 
+	private float timerTime, chosenTime;
 
 	void Start()
 	{
@@ -36,12 +39,21 @@ public class MusicPlayer : MonoBehaviour
 		hadBreaks = 0;
 
 		csvWriter = GetComponent<CsvReadWrite>();
-		csvWriter.Save("Sound", "Choice");
+		csvWriter.Save("Sound", "Choice", "Time");
 		SetTitle();	
+		startTiming = false;
 
 		Debug.Log(currentList.Count);
 
 		//todo: Let CSVWRITER print the first line through a method or something.
+	}
+
+	void Update()
+	{
+		if(startTiming)
+		{
+			timerTime += Time.deltaTime;
+		}
 	}
 
 	public void InitDatabase()
@@ -69,7 +81,7 @@ public class MusicPlayer : MonoBehaviour
 			playButton.SetActive(false);
 			AudioClip currentTune = currentList[randomInt].audio; 	//Get audio from list at random 
 
-			Invoke("GetRatingScreen", currentTune.length+0.25f);
+			Invoke("GetRatingScreen", currentTune.length);
 			
 			audioSource.PlayOneShot(currentTune); 
 		}
@@ -86,13 +98,20 @@ public class MusicPlayer : MonoBehaviour
 			AudioClip currentTune = currentList[randomInt].audio; 	//Get audio from list at random 
 			currentList[randomInt].played = true;					//and enable the bool
 
-			Invoke("GetRatingScreen", currentTune.length+0.25f);
+			Invoke("GetRatingScreen", currentTune.length);
 			
 			audioSource.PlayOneShot(currentTune); 
 		}
 	}
 
-	public void SendRating (string _rating) 
+	public void SetChoice (string _choice) 
+	{
+		PlayerPrefs.SetString("Choice", _choice);
+		nextButton.SetActive(true);
+		chosenTime = (float) System.Math.Round(timerTime, 3);
+	}
+
+	public void SendRating () 
 	{
 		if(isPractice)
 		{
@@ -105,7 +124,10 @@ public class MusicPlayer : MonoBehaviour
 		}
 		else
 		{
-			csvWriter.Save(currentList[randomInt].name, _rating);
+			string _rating = PlayerPrefs.GetString("Choice");
+			Debug.Log(_rating + " " + chosenTime);
+
+			csvWriter.Save(currentList[randomInt].name, _rating, chosenTime.ToString("F3"));
 			index++;
 
 			if(index == 5 || index == 10) 
@@ -121,6 +143,8 @@ public class MusicPlayer : MonoBehaviour
 				GetPlayingScreen();
 			}
 		}
+
+		nextButton.SetActive(false);
 	}
 
 	public void EndBreak()
@@ -134,11 +158,11 @@ public class MusicPlayer : MonoBehaviour
 	{
 		if(isPractice)
 		{
-			title.text = "Practice " + (indexPractice+1).ToString() + "/3";
+			title.text = "練習 " + (indexPractice+1).ToString() + "/3";
 		}
 		else
 		{
-			title.text = "Trial " + (index+1).ToString() + "/15";
+			title.text = "本試行 " + (index+1).ToString() + "/15";
 		}
 	}
 
@@ -146,6 +170,8 @@ public class MusicPlayer : MonoBehaviour
 	{
 		playingScreen.SetActive(false);
 		ratingScreen.SetActive(true);
+		timerTime = 0;
+		startTiming = true;
 	}
 
 	void GetPlayingScreen()
@@ -172,10 +198,6 @@ public class MusicPlayer : MonoBehaviour
 		finishScreen.SetActive(true);
 	}
 
-	void ShowNextButton()
-	{
-		
-	}
 
 	void NextMelody()
 	{
