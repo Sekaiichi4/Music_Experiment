@@ -67,11 +67,24 @@ public class MusicPlayer : MonoBehaviour
 			{
 				AudioClip tune;
 
-				tune = (AudioClip) Resources.Load("Sounds/" + categoryNames
-				[j] + "/" + categoryNames
-				[j] +i);
-				Song currentSong = new Song(tune, false, tune.name);
-				currentList.Add(currentSong);
+				if(ListeningOnly != 1)
+				{
+					tune = (AudioClip) Resources.Load("Quiz/" + categoryNames
+					[j] + "/" + categoryNames
+					[j] +i);
+					Song currentSong = new Song(tune, false, tune.name);
+					currentList.Add(currentSong);
+				}
+				else
+				{
+					tune = (AudioClip) Resources.Load("Listening/" + categoryNames
+					[j] + "/" + categoryNames
+					[j] +i);
+					Song currentSong = new Song(tune, false, tune.name);
+					currentList.Add(currentSong);
+				}
+				
+
 				Debug.Log("Added " + tune.name);	
 			}
 		}
