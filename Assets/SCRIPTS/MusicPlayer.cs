@@ -186,7 +186,7 @@ public class MusicPlayer : MonoBehaviour
 			}
 			else if(index == 10) 
 			{
-				GetFinishScreen();
+				GetBreakScreen();
 			}
 			else if(index == 15) 
 			{

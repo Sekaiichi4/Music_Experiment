@@ -16,6 +16,11 @@ public class SceneSwitcher : MonoBehaviour
 	{
 		PlayerPrefs.SetInt("Listening", i);
 	}
+
+	public void QuitApplication()
+	{
+		Application.Quit();
+	}
 }
 
 	
