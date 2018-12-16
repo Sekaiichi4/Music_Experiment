@@ -18,8 +18,11 @@ public class MusicPlayer : MonoBehaviour
 
 	public GameObject nextButton;
 
-	private string[] categoryNames = { "A", "B", "C", "D"};	
-	
+	private int[] categoryNames = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18};	
+	private string[] fileCategories = { "A", "B", "C", "D"};	
+	public bool[] categoriesPlayed = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};	
+	public Transform buttonQ,buttonX,buttonO;
+
 	private List<Song> currentList = new List<Song>();
 
 	private int randomInt, ListeningOnly;
@@ -61,61 +64,74 @@ public class MusicPlayer : MonoBehaviour
 
 	public void InitDatabase()
 	{
-		for(int j = 0; j < 4; j++)
+		for(int j = 0; j < 18; j++)
 		{
-			for(int i = 1; i <= 18; i++)
+			for(int i = 0; i < 4; i++)
 			{
 				AudioClip tune;
 
 				if(ListeningOnly != 1)
 				{
-					tune = (AudioClip) Resources.Load("Quiz/" + categoryNames
-					[j] + "/" + categoryNames
-					[j] +i);
+
+					tune = (AudioClip) Resources.Load("Quiz/" + (j+1).ToString()
+					+ "/" 
+					+ fileCategories[i] + (j+1).ToString());
 					Song currentSong = new Song(tune, false, tune.name);
 					currentList.Add(currentSong);
+
+					Debug.Log("Added " + tune.name);	
+
 				}
 				else
 				{
-					tune = (AudioClip) Resources.Load("Listening/" + categoryNames
-					[j] + "/" + categoryNames
-					[j] +i);
+
+					tune = (AudioClip) Resources.Load("Listening/" + (j+1).ToString()
+					+ "/" 
+					+ fileCategories[i] + (j+1).ToString());
 					Song currentSong = new Song(tune, false, tune.name);
 					currentList.Add(currentSong);
-				}
-				
+					
+					Debug.Log("Added " + tune.name);	
 
-				Debug.Log("Added " + tune.name);	
+				}
 			}
 		}
 	}
 
 	public void PlaySong()
 	{
-		if(isPractice)
-		{
-			playButton.SetActive(false);
-			AudioClip currentTune = currentList[randomInt].audio; 	//Get audio from list at random 
+		// if(isPractice)
+		// {
+		// 	playButton.SetActive(false);
+		// 	AudioClip currentTune = currentList[randomInt].audio; 	//Get audio from list at random 
 
-			if(ListeningOnly != 1)
-			{
-				Invoke("GetRatingScreen", currentTune.length);
-			}
-			else
-			{
-				Invoke("SendRating", currentTune.length);
-			}
+		// 	if(ListeningOnly != 1)
+		// 	{
+		// 		Invoke("GetRatingScreen", currentTune.length);
+		// 	}
+		// 	else
+		// 	{
+		// 		Invoke("SendRating", currentTune.length);
+		// 	}
 			
-			audioSource.PlayOneShot(currentTune); 
-		}
-		else
-		{
+		// 	audioSource.PlayOneShot(currentTune); 
+		// }
+		// else
+		// {
 			randomInt = Random.Range(0, currentList.Count);
+			string checkName = currentList[randomInt].name.Remove(0,1);
+			int checkNumber = System.Int32.Parse(checkName)-1;
+			Debug.Log(checkNumber);
 			
-			while(currentList[randomInt].played)
+			while(currentList[randomInt].played || categoriesPlayed[checkNumber])
 			{
 				randomInt = Random.Range(0, currentList.Count);
+				checkName = currentList[randomInt].name.Remove(0,1);
+				checkNumber = System.Int32.Parse(checkName)-1;
+				Debug.Log(checkNumber);
 			}
+
+			categoriesPlayed[checkNumber] = true;
 
 			playButton.SetActive(false);
 			AudioClip currentTune = currentList[randomInt].audio; 	//Get audio from list at random 
@@ -131,7 +147,7 @@ public class MusicPlayer : MonoBehaviour
 			}
 			
 			audioSource.PlayOneShot(currentTune); 
-		}
+		// }
 	}
 
 	public void SetChoice (string _choice) 
@@ -163,9 +179,14 @@ public class MusicPlayer : MonoBehaviour
 			}
 			index++;
 
-			if(index == 5 || index == 10) 
+			if(index == 5) 
 			{
 				GetBreakScreen();
+				ShuffleButtons();
+			}
+			else if(index == 10) 
+			{
+				GetFinishScreen();
 			}
 			else if(index == 15) 
 			{
@@ -191,11 +212,11 @@ public class MusicPlayer : MonoBehaviour
 	{
 		if(isPractice)
 		{
-			title.text = "練習 " + (indexPractice+1).ToString() + "/3";
+			title.text = "Practice " + (indexPractice+1).ToString() + "/3";
 		}
 		else
 		{
-			title.text = "本試行 " + (index+1).ToString() + "/15";
+			title.text = (index+1).ToString() + "/15";
 		}
 	}
 
@@ -231,10 +252,20 @@ public class MusicPlayer : MonoBehaviour
 		finishScreen.SetActive(true);
 	}
 
-
 	void NextMelody()
 	{
 		randomInt = Random.Range(0, currentList.Count);
+	}
+
+	void ShuffleButtons()
+	{
+		Vector3 xPos = buttonX.position;
+		Vector3 oPos = buttonO.position;
+		Vector3 qPos = buttonQ.position;
+
+		buttonQ.position = xPos;
+		buttonX.position = oPos;
+		buttonO.position = qPos;
 	}
 
 }
