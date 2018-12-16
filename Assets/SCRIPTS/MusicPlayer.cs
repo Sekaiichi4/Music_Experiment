@@ -22,7 +22,7 @@ public class MusicPlayer : MonoBehaviour
 	
 	private List<Song> currentList = new List<Song>();
 
-	private int randomInt;
+	private int randomInt, ListeningOnly;
 
 	private AudioSource audioSource;
 
@@ -37,15 +37,18 @@ public class MusicPlayer : MonoBehaviour
 		index = 0;
 		indexPractice = 0;
 		hadBreaks = 0;
+		ListeningOnly = PlayerPrefs.GetInt("Listening");
 
-		csvWriter = GetComponent<CsvReadWrite>();
-		csvWriter.Save("Sound", "Choice", "Time");
+		if(ListeningOnly != 1)
+		{
+			csvWriter = GetComponent<CsvReadWrite>();
+			csvWriter.Save("Sound", "Choice", "Time");
+		}
+
 		SetTitle();	
 		startTiming = false;
 
 		Debug.Log(currentList.Count);
-
-		//todo: Let CSVWRITER print the first line through a method or something.
 	}
 
 	void Update()
@@ -81,7 +84,14 @@ public class MusicPlayer : MonoBehaviour
 			playButton.SetActive(false);
 			AudioClip currentTune = currentList[randomInt].audio; 	//Get audio from list at random 
 
-			Invoke("GetRatingScreen", currentTune.length);
+			if(ListeningOnly != 1)
+			{
+				Invoke("GetRatingScreen", currentTune.length);
+			}
+			else
+			{
+				Invoke("SendRating", currentTune.length);
+			}
 			
 			audioSource.PlayOneShot(currentTune); 
 		}
@@ -98,7 +108,14 @@ public class MusicPlayer : MonoBehaviour
 			AudioClip currentTune = currentList[randomInt].audio; 	//Get audio from list at random 
 			currentList[randomInt].played = true;					//and enable the bool
 
-			Invoke("GetRatingScreen", currentTune.length);
+			if(ListeningOnly != 1)
+			{
+				Invoke("GetRatingScreen", currentTune.length);
+			}
+			else
+			{
+				Invoke("SendRating", currentTune.length);
+			}
 			
 			audioSource.PlayOneShot(currentTune); 
 		}
@@ -124,10 +141,13 @@ public class MusicPlayer : MonoBehaviour
 		}
 		else
 		{
-			string _rating = PlayerPrefs.GetString("Choice");
-			Debug.Log(_rating + " " + chosenTime);
+			if(ListeningOnly != 1)
+			{
+				string _rating = PlayerPrefs.GetString("Choice");
+				Debug.Log(_rating + " " + chosenTime);
 
-			csvWriter.Save(currentList[randomInt].name, _rating, chosenTime.ToString("F3"));
+				csvWriter.Save(currentList[randomInt].name, _rating, chosenTime.ToString("F3"));
+			}
 			index++;
 
 			if(index == 5 || index == 10) 

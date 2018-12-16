@@ -12,10 +12,10 @@ public class SceneSwitcher : MonoBehaviour
 		SceneManager.LoadScene(_name);
 	}
 
-	// public void DecideStart(int i)
-	// {
-	// 	PlayerPrefs.SetInt("MajorOrMinor", i);
-	// }
+	public void DecideStart(int i)
+	{
+		PlayerPrefs.SetInt("Listening", i);
+	}
 }
 
 	
