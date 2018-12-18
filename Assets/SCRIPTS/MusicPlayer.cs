@@ -35,9 +35,7 @@ public class MusicPlayer : MonoBehaviour
 											new string[] {"D3","C6","F1","B5","E2","A4"},
 											new string[] {"D6","A2","C1","F5","E3","B4"}
 								 		};
-	private int[] categoryNames = { 1, 2, 3, 4, 5, 6};	
 	private string[] fileCategories = { "A", "B", "C", "D", "E", "F"};	
-	//public bool[] categoriesPlayed = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};	
 	public Transform buttonQ,buttonX,buttonO;
 
 	private List<Song> allSongs = new List<Song>();
@@ -54,17 +52,19 @@ public class MusicPlayer : MonoBehaviour
 	void Start()
 	{
 		participantNumber = PlayerPrefs.GetInt("Participant");
+		ListeningOnly = PlayerPrefs.GetInt("Listening");
 		audioSource = GetComponent<AudioSource>();
+		
 		InitDatabase();
 		index = 0;
 		indexPractice = 0;
 		hadBreaks = 0;
-		ListeningOnly = PlayerPrefs.GetInt("Listening");
+		
 
 		if(ListeningOnly != 1)
 		{
 			csvWriter = GetComponent<CsvReadWrite>();
-			csvWriter.Save("Participant", "=", "participantNumber");
+			csvWriter.Save("Participant", "=", participantNumber.ToString());
 			csvWriter.Save("Sound", "Choice", "Time");
 		}
 
@@ -88,9 +88,11 @@ public class MusicPlayer : MonoBehaviour
 		AudioClip p1 = (AudioClip) Resources.Load("Practice/P1");
 		Song p1Song = new Song(p1, false, p1.name);
 		currentList.Add(p1Song);
+		Debug.Log("Added " + p1Song.name);
 		AudioClip p2 = (AudioClip) Resources.Load("Practice/P2");
-		Song p2Song = new Song(p1, false, p1.name);
+		Song p2Song = new Song(p2, false, p2.name);
 		currentList.Add(p2Song);
+		Debug.Log("Added " + p2Song.name);
 
 		//LOAD ALL REAL SOUNDS
 		for(int j = 0; j < 6; j++)
@@ -99,30 +101,12 @@ public class MusicPlayer : MonoBehaviour
 			{
 				AudioClip tune;
 
-				if(ListeningOnly != 1)
-				{
-
-					tune = (AudioClip) Resources.Load("Sounds/" + (j+1).ToString()
-					+ "/" 
-					+ fileCategories[i] + (j+1).ToString());
-					Song currentSong = new Song(tune, false, tune.name);
-					allSongs.Add(currentSong);
-
-					Debug.Log("Added " + tune.name);	
-
-				}
-				else
-				{
-
-					tune = (AudioClip) Resources.Load("Listening/" + (j+1).ToString()
-					+ "/" 
-					+ fileCategories[i] + (j+1).ToString());
-					Song currentSong = new Song(tune, false, tune.name);
-					allSongs.Add(currentSong);
-					
-					Debug.Log("Added " + tune.name);	
-
-				}
+				tune = (AudioClip) Resources.Load("Sounds/" + (j+1).ToString()
+				+ "/" 
+				+ fileCategories[i] + (j+1).ToString());
+				Song currentSong = new Song(tune, false, tune.name);
+				allSongs.Add(currentSong);
+	
 			}
 		}
 
@@ -131,55 +115,23 @@ public class MusicPlayer : MonoBehaviour
 		{
 			if(ListeningOnly != 1)
 			{
-				Song currentSong = allSongs.Find(x => x.name == quizLists[(participantNumber%6)-1][h]);
+				Song currentSong = allSongs.Find(x => x.name == quizLists[(participantNumber)-1][h]);
 				currentList.Add(currentSong);
+				Debug.Log("Added " + currentSong.name);	
 			}
 			else
 			{
-				Song currentSong = allSongs.Find(x => x.name == listeningLists[(participantNumber%6)-1][h]);
+				Song currentSong = allSongs.Find(x => x.name == listeningLists[(participantNumber)-1][h]);
 				currentList.Add(currentSong);
+				Debug.Log("Added " + currentSong.name);	
 			}
 		}
 	}
 
 	public void PlaySong()
 	{
-		// if(isPractice)
-		// {
-		// 	playButton.SetActive(false);
-		// 	AudioClip currentTune = currentList[randomInt].audio; 	//Get audio from list at random 
-
-		// 	if(ListeningOnly != 1)
-		// 	{
-		// 		Invoke("GetRatingScreen", currentTune.length);
-		// 	}
-		// 	else
-		// 	{
-		// 		Invoke("SendRating", currentTune.length);
-		// 	}
-			
-		// 	audioSource.PlayOneShot(currentTune); 
-		// }
-		// else
-		// {
-			// randomInt = Random.Range(0, allSongs.Count);
-			// string checkName = allSongs[randomInt].name.Remove(0,1);
-			// int checkNumber = System.Int32.Parse(checkName)-1;
-			// Debug.Log(checkNumber);
-			
-			// while(allSongs[randomInt].played || categoriesPlayed[checkNumber])
-			// {
-			// 	randomInt = Random.Range(0, allSongs.Count);
-			// 	checkName = allSongs[randomInt].name.Remove(0,1);
-			// 	checkNumber = System.Int32.Parse(checkName)-1;
-			// 	Debug.Log(checkNumber);
-			// }
-
-			// categoriesPlayed[checkNumber] = true;
-
 			playButton.SetActive(false);
-			AudioClip currentTune = currentList[index].audio; 
-			//allSongs[randomInt].played = true;					
+			AudioClip currentTune = currentList[index].audio; 					
 
 			if(ListeningOnly != 1)
 			{
@@ -191,7 +143,6 @@ public class MusicPlayer : MonoBehaviour
 			}
 			
 			audioSource.PlayOneShot(currentTune); 
-		// }
 	}
 
 	public void SetChoice (string _choice) 
@@ -210,6 +161,7 @@ public class MusicPlayer : MonoBehaviour
 				isPractice = false;
 			}
 			indexPractice++;
+			index++;
 			GetPlayingScreen();
 		}
 		else
@@ -228,7 +180,7 @@ public class MusicPlayer : MonoBehaviour
 			// 	GetBreakScreen();
 			// 	ShuffleButtons();
 			// }
-			if(index == 6) 
+			if(index == 8) 
 			{
 				GetFinishScreen();
 			}
@@ -256,7 +208,7 @@ public class MusicPlayer : MonoBehaviour
 		}
 		else
 		{
-			title.text = (index+1).ToString() + "/6";
+			title.text = (index-indexPractice+1).ToString() + "/6";
 		}
 	}
 
@@ -271,7 +223,6 @@ public class MusicPlayer : MonoBehaviour
 	void GetPlayingScreen()
 	{
 		playButton.SetActive(true);
-		// NextMelody();
 		ratingScreen.SetActive(false);
 		SetTitle();
 		playingScreen.SetActive(true);
@@ -291,11 +242,6 @@ public class MusicPlayer : MonoBehaviour
 		breakScreen.SetActive(false);
 		finishScreen.SetActive(true);
 	}
-
-	// void NextMelody()
-	// {
-	// 	//randomInt = Random.Range(0, currentList.Count);
-	// }
 
 	void ShuffleButtons()
 	{
