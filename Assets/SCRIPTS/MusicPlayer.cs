@@ -161,6 +161,7 @@ public class MusicPlayer : MonoBehaviour
 			}
 			indexPractice++;
 			index++;
+			ShuffleButtons();
 			GetPlayingScreen();
 		}
 		else
@@ -185,6 +186,7 @@ public class MusicPlayer : MonoBehaviour
 			}
 			else
 			{
+				ShuffleButtons();
 				GetPlayingScreen();
 			}
 		}
