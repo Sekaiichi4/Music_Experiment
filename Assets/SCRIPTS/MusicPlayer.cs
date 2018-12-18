@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class MusicPlayer : MonoBehaviour 
 {
-	//public List<AudioClip> allAudio;
 	public GameObject playingScreen;
 	public GameObject playButton;
 	public GameObject ratingScreen;
