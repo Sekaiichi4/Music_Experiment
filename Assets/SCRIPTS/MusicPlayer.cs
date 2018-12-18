@@ -18,14 +18,32 @@ public class MusicPlayer : MonoBehaviour
 
 	public GameObject nextButton;
 
-	private int[] categoryNames = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18};	
-	private string[] fileCategories = { "A", "B", "C", "D"};	
-	public bool[] categoriesPlayed = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};	
+	private string[][] quizLists = new string[][] 	
+										{	new string[] {"B3","C4","D6","E1","A5","F2"},
+											new string[] {"E4","C3","A2","D5","B1","F6"},
+											new string[] {"B6","F3","A4","D2","E5","C1"},
+											new string[] {"B2","C5","D3","A1","F4","E6"},
+											new string[] {"E3","C2","F1","D4","A6","B5"},
+											new string[] {"C6","B4","D1","A3","F5","E2"}
+										};
+
+	private string[][] listeningLists = new string[][] 
+										{	new string[] {"A3","C5","B6","F4","E1","D2"},
+											new string[] {"E6","B3","F2","A5","C4","D1"},
+											new string[] {"B1","A6","C2","D4","E5","F3"},
+											new string[] {"E4","A1","F6","B2","D5","C3"},
+											new string[] {"D3","C6","F1","B5","E2","A4"},
+											new string[] {"D6","A2","C1","F5","E3","B4"}
+								 		};
+	private int[] categoryNames = { 1, 2, 3, 4, 5, 6};	
+	private string[] fileCategories = { "A", "B", "C", "D", "E", "F"};	
+	//public bool[] categoriesPlayed = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};	
 	public Transform buttonQ,buttonX,buttonO;
 
+	private List<Song> allSongs = new List<Song>();
 	private List<Song> currentList = new List<Song>();
 
-	private int randomInt, ListeningOnly;
+	private int participantNumber, ListeningOnly;
 
 	private AudioSource audioSource;
 
@@ -35,6 +53,7 @@ public class MusicPlayer : MonoBehaviour
 
 	void Start()
 	{
+		participantNumber = PlayerPrefs.GetInt("Participant");
 		audioSource = GetComponent<AudioSource>();
 		InitDatabase();
 		index = 0;
@@ -45,13 +64,14 @@ public class MusicPlayer : MonoBehaviour
 		if(ListeningOnly != 1)
 		{
 			csvWriter = GetComponent<CsvReadWrite>();
+			csvWriter.Save("Participant", "=", "participantNumber");
 			csvWriter.Save("Sound", "Choice", "Time");
 		}
 
 		SetTitle();	
 		startTiming = false;
 
-		Debug.Log(currentList.Count);
+		Debug.Log(allSongs.Count);
 	}
 
 	void Update()
@@ -64,20 +84,29 @@ public class MusicPlayer : MonoBehaviour
 
 	public void InitDatabase()
 	{
-		for(int j = 0; j < 18; j++)
+		//FIRST 2 PRACTICE SOUNDS
+		AudioClip p1 = (AudioClip) Resources.Load("Practice/P1");
+		Song p1Song = new Song(p1, false, p1.name);
+		currentList.Add(p1Song);
+		AudioClip p2 = (AudioClip) Resources.Load("Practice/P2");
+		Song p2Song = new Song(p1, false, p1.name);
+		currentList.Add(p2Song);
+
+		//LOAD ALL REAL SOUNDS
+		for(int j = 0; j < 6; j++)
 		{
-			for(int i = 0; i < 4; i++)
+			for(int i = 0; i < 6; i++)
 			{
 				AudioClip tune;
 
 				if(ListeningOnly != 1)
 				{
 
-					tune = (AudioClip) Resources.Load("Quiz/" + (j+1).ToString()
+					tune = (AudioClip) Resources.Load("Sounds/" + (j+1).ToString()
 					+ "/" 
 					+ fileCategories[i] + (j+1).ToString());
 					Song currentSong = new Song(tune, false, tune.name);
-					currentList.Add(currentSong);
+					allSongs.Add(currentSong);
 
 					Debug.Log("Added " + tune.name);	
 
@@ -89,11 +118,26 @@ public class MusicPlayer : MonoBehaviour
 					+ "/" 
 					+ fileCategories[i] + (j+1).ToString());
 					Song currentSong = new Song(tune, false, tune.name);
-					currentList.Add(currentSong);
+					allSongs.Add(currentSong);
 					
 					Debug.Log("Added " + tune.name);	
 
 				}
+			}
+		}
+
+		//MAKE LIST FOR CURRENT PARTICIPANT
+		for(int h = 0; h < 6; h++)
+		{
+			if(ListeningOnly != 1)
+			{
+				Song currentSong = allSongs.Find(x => x.name == quizLists[(participantNumber%6)-1][h]);
+				currentList.Add(currentSong);
+			}
+			else
+			{
+				Song currentSong = allSongs.Find(x => x.name == listeningLists[(participantNumber%6)-1][h]);
+				currentList.Add(currentSong);
 			}
 		}
 	}
@@ -118,24 +162,24 @@ public class MusicPlayer : MonoBehaviour
 		// }
 		// else
 		// {
-			randomInt = Random.Range(0, currentList.Count);
-			string checkName = currentList[randomInt].name.Remove(0,1);
-			int checkNumber = System.Int32.Parse(checkName)-1;
-			Debug.Log(checkNumber);
+			// randomInt = Random.Range(0, allSongs.Count);
+			// string checkName = allSongs[randomInt].name.Remove(0,1);
+			// int checkNumber = System.Int32.Parse(checkName)-1;
+			// Debug.Log(checkNumber);
 			
-			while(currentList[randomInt].played || categoriesPlayed[checkNumber])
-			{
-				randomInt = Random.Range(0, currentList.Count);
-				checkName = currentList[randomInt].name.Remove(0,1);
-				checkNumber = System.Int32.Parse(checkName)-1;
-				Debug.Log(checkNumber);
-			}
+			// while(allSongs[randomInt].played || categoriesPlayed[checkNumber])
+			// {
+			// 	randomInt = Random.Range(0, allSongs.Count);
+			// 	checkName = allSongs[randomInt].name.Remove(0,1);
+			// 	checkNumber = System.Int32.Parse(checkName)-1;
+			// 	Debug.Log(checkNumber);
+			// }
 
-			categoriesPlayed[checkNumber] = true;
+			// categoriesPlayed[checkNumber] = true;
 
 			playButton.SetActive(false);
-			AudioClip currentTune = currentList[randomInt].audio; 	//Get audio from list at random 
-			currentList[randomInt].played = true;					//and enable the bool
+			AudioClip currentTune = currentList[index].audio; 
+			//allSongs[randomInt].played = true;					
 
 			if(ListeningOnly != 1)
 			{
@@ -161,7 +205,7 @@ public class MusicPlayer : MonoBehaviour
 	{
 		if(isPractice)
 		{
-			if(indexPractice == 2)
+			if(indexPractice == 1)
 			{
 				isPractice = false;
 			}
@@ -175,20 +219,16 @@ public class MusicPlayer : MonoBehaviour
 				string _rating = PlayerPrefs.GetString("Choice");
 				Debug.Log(_rating + " " + chosenTime);
 
-				csvWriter.Save(currentList[randomInt].name, _rating, chosenTime.ToString("F3"));
+				csvWriter.Save(currentList[index].name, _rating, chosenTime.ToString("F3"));
 			}
 			index++;
 
-			if(index == 5) 
-			{
-				GetBreakScreen();
-				ShuffleButtons();
-			}
-			else if(index == 10) 
-			{
-				GetBreakScreen();
-			}
-			else if(index == 15) 
+			// if(index == 3) 
+			// {
+			// 	GetBreakScreen();
+			// 	ShuffleButtons();
+			// }
+			if(index == 6) 
 			{
 				GetFinishScreen();
 			}
@@ -212,11 +252,11 @@ public class MusicPlayer : MonoBehaviour
 	{
 		if(isPractice)
 		{
-			title.text = "Practice " + (indexPractice+1).ToString() + "/3";
+			title.text = "Practice " + (indexPractice+1).ToString() + "/2";
 		}
 		else
 		{
-			title.text = (index+1).ToString() + "/15";
+			title.text = (index+1).ToString() + "/6";
 		}
 	}
 
@@ -231,7 +271,7 @@ public class MusicPlayer : MonoBehaviour
 	void GetPlayingScreen()
 	{
 		playButton.SetActive(true);
-		NextMelody();
+		// NextMelody();
 		ratingScreen.SetActive(false);
 		SetTitle();
 		playingScreen.SetActive(true);
@@ -252,10 +292,10 @@ public class MusicPlayer : MonoBehaviour
 		finishScreen.SetActive(true);
 	}
 
-	void NextMelody()
-	{
-		randomInt = Random.Range(0, currentList.Count);
-	}
+	// void NextMelody()
+	// {
+	// 	//randomInt = Random.Range(0, currentList.Count);
+	// }
 
 	void ShuffleButtons()
 	{
