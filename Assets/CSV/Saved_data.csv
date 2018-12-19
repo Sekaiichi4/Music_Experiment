@@ -1,5 +1,7 @@
-Participant,=,2
+Participant,=,5
 Sound,Choice,Time
-E4,O,6.214
-C3,O,6.842
+E3,O,2.501
+E3,X,6.146
+E3,?,8.962
+C2,O,0.563
 

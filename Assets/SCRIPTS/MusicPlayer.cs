@@ -134,7 +134,8 @@ public class MusicPlayer : MonoBehaviour
 
 			if(ListeningOnly != 1)
 			{
-				Invoke("GetRatingScreen", currentTune.length);
+				//Invoke("GetRatingScreen", currentTune.length);
+				GetRatingScreen();
 			}
 			else
 			{
@@ -148,10 +149,19 @@ public class MusicPlayer : MonoBehaviour
 	{
 		PlayerPrefs.SetString("Choice", _choice);
 		nextButton.SetActive(true);
-		chosenTime = (float) System.Math.Round(timerTime, 3);
+		chosenTime = (float) System.Math.Round(timerTime-0.1f, 3);
+
+		//And Send Rating.
+		if(ListeningOnly != 1 && !isPractice)
+		{
+			string _rating = PlayerPrefs.GetString("Choice"); //No Need in this case
+			Debug.Log(_rating + " " + chosenTime);
+
+			csvWriter.Save(currentList[index].name, _choice, chosenTime.ToString("F3"));
+		}
 	}
 
-	public void SendRating () 
+	public void SendRating () //Now it only skips to the next quiz.
 	{
 		if(isPractice)
 		{
@@ -166,13 +176,6 @@ public class MusicPlayer : MonoBehaviour
 		}
 		else
 		{
-			if(ListeningOnly != 1)
-			{
-				string _rating = PlayerPrefs.GetString("Choice");
-				Debug.Log(_rating + " " + chosenTime);
-
-				csvWriter.Save(currentList[index].name, _rating, chosenTime.ToString("F3"));
-			}
 			index++;
 
 			// if(index == 3) 
