@@ -46,7 +46,7 @@ public class MusicPlayer : MonoBehaviour
 
 	private CsvReadWrite csvWriter;
 
-	private float timerTime, chosenTime;
+	private float timerTime, chosenTime, currentTuneLength;
 
 	void Start()
 	{
@@ -135,6 +135,9 @@ public class MusicPlayer : MonoBehaviour
 			if(ListeningOnly != 1)
 			{
 				//Invoke("GetRatingScreen", currentTune.length);
+				timerTime = 0;
+				startTiming = true;
+				currentTuneLength = currentTune.length;
 				GetRatingScreen();
 			}
 			else
@@ -149,7 +152,8 @@ public class MusicPlayer : MonoBehaviour
 	{
 		PlayerPrefs.SetString("Choice", _choice);
 		nextButton.SetActive(true);
-		chosenTime = (float) System.Math.Round(timerTime-0.1f, 3);
+		Debug.Log(timerTime + " - " + currentTuneLength + " - 0.1");
+		chosenTime = (float) System.Math.Round((timerTime-currentTuneLength-0.1f), 5);
 
 		//And Send Rating.
 		if(ListeningOnly != 1 && !isPractice)
@@ -220,8 +224,6 @@ public class MusicPlayer : MonoBehaviour
 	{
 		playingScreen.SetActive(false);
 		ratingScreen.SetActive(true);
-		timerTime = 0;
-		startTiming = true;
 	}
 
 	void GetPlayingScreen()
